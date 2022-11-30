@@ -1,71 +1,74 @@
 class Node:
-    def __init__(self, data, parent):
-        self._data = data
-        self._child = []
-        self._parent = parent
-    
-    def addChild(self, data):
-        self._child.append(data)
-    
-class Tree:
-    def sums(self, node):
-        sum = 0
-        if len(node._child) == 0:
-            return node._data
-        for anak in node._child:
-            sum += self.sums(anak)
-        return sum + node._data
+    def __init__(self,data):
+        self.data = data
+        self.parent = None
+        self.child = []
 
-    def sibling(self, node):
-        if len(node._parent._child) == 0:
-            return node._data
-        elif len(node._parent._child) == 1:
-            return node._data
+class Tree:
+    def __init__(self,root):
+        self.root = root
+
+    def addChild(self, node_parent,data):
+        #tulis kode Anda di sini
+        #1. buat node baru menggunakan Class Node()
+        #2. isi parent dari node baru tersebut dengan node_parent
+        #3. node_parent menambahkan node baru (anaknya)
+        #4. return node baru
+        node_baru = Node(data)
+        node_baru.parent = node_parent
+        node_parent.child.append(node_baru)
+        return node_baru
+
+    def sums(self,node):
+        sum = 0
+        if len(node.child) == 0:
+            return node.data
+        for anak in node.child:
+            sum += self.sums(anak)
+        return sum + node.data
+                
+    def sibling(self,node):
+        if len(node.parent.child) == 0:
+            return node.data
+        elif len(node.parent.child) == 1:
+            return node.data
         else:
             saudara = 0
-            for anak in node._parent._child:
-                saudara += anak._data
+            for anak in node.parent.child:
+                saudara += anak.data
             return saudara
-
-
-if __name__ == '__main__':
-    root = Node(200, None)
-    test1 = Node(23,root)
-    test2 = Node(11,root)
-    test3 = Node(13, test1)
-    test4 = Node(57, test1)
-    test5 = Node(32, test2)
-    test6 = Node(42, test3)
-    test7 = Node(51, test3)
-    test8 = Node(71,test3)
-    test9 = Node(12, test4)
-    test10 = Node(15, test4)
-    test11 = Node(33, test5)
-    test12 = Node(8, test5)
-
-    root.addChild(test1)
-    root.addChild(test2)
-    test1.addChild(test3)
-    test1.addChild(test4)
-    test2.addChild(test5)
-    test3.addChild(test6)
-    test3.addChild(test7)
-    test3.addChild(test8)
-    test4.addChild(test9)
-    test4.addChild(test10)
-    test5.addChild(test11)
-    test5.addChild(test12)
-
-
-    t = Tree()
-    val33 = test11
-    val200 = root
-    print(f'Total value of all sibling on node {val33._data} = {t.sibling(val33)}')
-    print(f'Total value of node {val200._data} and all of its decendands = {t.sums(val200)}')
-        
-
     
 
-# test case
-# print(f'Total value of node {val200.data} and all of its decendands = {t.sums(val200)}')
-# print(f'Total value of all sibling on node {val33.data} = {t.sibling(val33)}')
+if __name__ =='__main__':
+    val200 = Node(200)
+    t = Tree(val200) #Level 0
+
+    #Level 1 parent 200
+    val23 = t.addChild(val200, 23) 
+    val11 = t.addChild(val200, 11)
+
+    #Level 2 parent 23
+    val13 = t.addChild(val23, 13) 
+    val57 = t.addChild(val23, 57) 
+
+    #Level 2 parent 11
+    val32 = t.addChild(val11, 32) 
+
+    #Level 3 parent 13
+    val42 = t.addChild(val13, 42) 
+    val51 = t.addChild(val13, 51) 
+    val71 = t.addChild(val13, 71) 
+
+    #Level 3 parent 57
+    val12 = t.addChild(val57, 12) 
+    val15 = t.addChild(val57, 15)
+
+    #Level 3 parent 24
+    val33 = t.addChild(val32, 33)
+    val8 = t.addChild(val32, 8)
+
+    # No 2. #
+    print(f'Total value of node {val200.data} and all of its decendands = {t.sums(val200)}')
+ 
+    # No 3. #
+    print(f'Total value of all sibling on node {val33.data} = {t.sibling(val33)}')
